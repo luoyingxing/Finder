@@ -2,8 +2,10 @@ package com.lxx.finder;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,6 +29,7 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -173,6 +176,8 @@ public class FindActivity extends AppCompatActivity {
                     while (!finish) {
                         int len = is.read(bytes);
 
+                        Log.d("FindActivity", "********  " + Arrays.toString(bytes));
+
                         if (len > 0) {
                             final String data = new String(bytes, "UTF-8");
                             Log.d("FindActivity", "收到： " + data);
@@ -183,6 +188,16 @@ public class FindActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         Toast.makeText(getApplicationContext(), "查找成功！", Toast.LENGTH_SHORT).show();
+//                                        new AlertDialog.Builder(getApplicationContext())
+//                                                .setTitle("提示")
+//                                                .setMessage("查找成功！")
+//                                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                                                    @Override
+//                                                    public void onClick(DialogInterface dialog, int which) {
+//                                                        dialog.dismiss();
+//                                                    }
+//                                                })
+//                                                .show();
                                     }
                                 });
                             }
@@ -192,8 +207,10 @@ public class FindActivity extends AppCompatActivity {
                     is.close();
                     os.close();
                     socket.close();
+                    finish = true;
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
+                    finish = true;
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -202,6 +219,7 @@ public class FindActivity extends AppCompatActivity {
                     });
                 } catch (IOException e) {
                     e.printStackTrace();
+                    finish = true;
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
